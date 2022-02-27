@@ -1,18 +1,14 @@
-import requests as r
-from bs4 import BeautifulSoup 
+# Import libraries
+import wget
+import os
 
-api = 'https://mdallsky.astro.umd.edu/masn01-archive/'
-r.get(api).text
-html = BeautifulSoup(r.get(api).text, 'html.parser')
+# Open the folder containing lists of all fits locations
 
-table = html.find('table')
-links = table.findAll('tr')
+print("Downloading all fits")
 
-for i in links:
-    print(i)
-
-
-
-
-
-
+for listname in os.listdir("allsky_file_list"):
+    with open(os.path.join("allsky_file_list", listname), 'r') as f:
+        contents = f.read().split("\n")
+        for fit in contents:
+            wget.download("https://mdallsky.astro.umd.edu/masn01-archive/" + fit[2:6] + fit[1:], out="fits/" + fit.split("/")[3])
+        print(len(contents))
