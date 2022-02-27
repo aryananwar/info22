@@ -13,4 +13,3 @@ for listname in os.listdir("allsky_file_list"):
                 wget.download("https://mdallsky.astro.umd.edu/masn01-archive/" + fit[2:6] + fit[1:], out="fits/" + fit.split("/")[3]) # Parse each line and structure a valid url to wget
             except:
                 print("Caught invalid url")
-        print(len(contents))
