@@ -47,5 +47,8 @@ for date, value in dates.items():
         elif time < lowestTime['value']:
             lowestTime['string'] = f"{hour}:{minute}:{second}"
             lowestTime['value'] = time
+    dates[date]['lowestTime'] = lowestTime
+    dates[date]['highestTime'] = highestTime
+    del dates[date]['dates']
 
-print(highestTime, lowestTime)
+print(dates)
