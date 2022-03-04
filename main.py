@@ -30,6 +30,7 @@ class umdInfo:
             case "3":
                 print("[*] You selected: Analyze JPGs")
             case "4": 
+                print('[!] Thank you! Have a good day.')
                 quit()
             case _:
                 print("[!] Please enter one of the options!")

@@ -12,8 +12,8 @@ class downloader:
 
         # Download FITS images
         print("[!] Downloading all FITS images...")
-        for listname in os.listdir("../allsky_file_list"):
-            with open(os.path.join("../allsky_file_list", listname), 'r') as f:
+        for listname in os.listdir("./allsky_file_list"):
+            with open(os.path.join("./allsky_file_list", listname), 'r') as f:
                 contents = f.read().split("\n")
                 for fit in contents:
                     try:
