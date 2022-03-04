@@ -4,30 +4,25 @@ import os
 
 
 class View:
-    def view_one(f):
-        file = fits.open(f) 
-        img_data = file[0].data
-        plt.figure()
-            
-        plt.imshow(img_data, cmap ="gray")
-        plt.colorbar()
-        plt.show()
 
     def view_multiple():
-        folder = input('Enter path to fits folder: ')
-        for f in os.listdir(folder):
-            try:
-                file = fits.open(f) 
-                img_data = file[0].data
-            except:
-                pass
-            
-        x = ' '    
-        while(x != '0'):
-            plt.figure()
-            plt.imshow(img_data, cmap ="gray")
-            plt.colorbar()
-            plt.show()
+        folder = input('Enter path to fits folder')
 
-            print('Press any key to view next file.')
-            x = input()
+        for directory in os.listdir(folder):
+            if os.path.isdir(f"{folder}/{directory}"):
+                for f in os.listdir(f"{folder}/{directory}"):
+                    if 'tmp' in f:
+                        continue
+                    try:
+                        yo = fits.open(f"{folder}/{directory}/{f}") 
+                        img_data = yo[0].data 
+                        plt.figure()
+                        plt.imshow(img_data, cmap ="gray")
+                        plt.colorbar()
+                        plt.show()
+                    except FileNotFoundError as e:
+                        print(e)
+                        pass
+
+
+View.view_multiple()

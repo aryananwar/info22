@@ -41,7 +41,7 @@ class Sort:
                         date = file[0].header['DATE-OBS'].split('T')[0]
                         a += file[0].header['DATE-OBS'] + '\n'
                         bugs = 0
-                        if file[0].header['hasBug']:
+                        if file[0].header['bugs']:
                             bugs = 1
                         if date not in dates:
                             dates[date] = {
@@ -55,7 +55,10 @@ class Sort:
                         else:
                             dates[date]['pictures'] += 1
                             dates[date]['dates'].append(file[0].header['DATE-OBS'])
-                            dates[date]['bugs'] += bugs
+                            if 'bugs' in dates[date]:
+                                dates[date]['bugs'] += bugs
+                            else:
+                                dates[date]['bugs'] = bugs
                             if(dates[date]['telescopeUsed'] != file[0].header['TELESCOP']):
                                 print('telescope mismatch')
                             if(dates[date]['instrument'] != file[0].header['INSTRUME']):
@@ -104,4 +107,8 @@ class Sort:
                             else:
                                 time = file[0].header['DATE-OBS'].split('T')[1]
                                 date = file[0].header['DATE-OBS'].split('T')[0]
-                            writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], hdr['BUGS']])
+                            if 'BUGS' in hdr:
+                                bugs = hdr['BUGS']
+                            else:
+                                bugs = 0 
+                            writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs])
