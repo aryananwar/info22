@@ -14,11 +14,13 @@ class View:
         plt.show()
 
     def view_multiple():
-
-        print('Enter path to fits folder')
-        for file in os.listdir(folder):
-            file = fits.open(f) 
-            img_data = file[0].data
+        folder = input('Enter path to fits folder: ')
+        for f in os.listdir(folder):
+            try:
+                file = fits.open(f) 
+                img_data = file[0].data
+            except:
+                pass
             
         x = ' '    
         while(x != '0'):
@@ -29,6 +31,3 @@ class View:
 
             print('Press any key to view next file.')
             x = input()
-
-
- 

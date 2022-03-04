@@ -2,6 +2,7 @@
 from src.downloader import downloader
 from src.converter import converter
 from src.obstructionDetector import obstructionDetector
+from src.view import View
 
 class umdInfo:
     def getQuery(self):
@@ -11,7 +12,9 @@ class umdInfo:
 1) Download FITS images
 2) Convert FITS images to JPGs
 3) Analyze JPGs
-4) Close Tool
+4) View FITS
+5) Organize FITS
+6) Close Tool
 
 => """
         )
@@ -31,7 +34,13 @@ class umdInfo:
             case "3":
                 print("[*] You selected: Analyze JPGs")
                 handler = obstructionDetector.obstructionDetector()
-            case "4": 
+            case "4":
+                print("[*] You selected: View FITS")
+                View.view_multiple()
+            case "5":
+                print("[*] You selected: Organize FITS")
+                handler = obstructionDetector.obstructionDetector()
+            case "6": 
                 print('[!] Thank you! Have a good day.')
                 quit()
             case _:
