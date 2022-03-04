@@ -24,5 +24,3 @@ class View:
                         print(e)
                         pass
 
-
-View.view_multiple()
