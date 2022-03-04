@@ -23,6 +23,7 @@ def organize():
             
 
 def getData():
+    a = ''
     for directory in os.listdir('./fits'):
         if os.path.isdir(f"fits/{directory}"):
             print(directory)
@@ -33,13 +34,13 @@ def getData():
                         continue          
                     file = fits.open(f"./fits/{directory}/{file}")
                     date = file[0].header['DATE-OBS'].split('T')[0]
+                    a += file[0].header['DATE-OBS'] + '\n'
                     if date not in dates:
                         dates[date] = {
                             "pictures": 1,
                             "telescopeUsed": file[0].header['TELESCOP'],
                             "location": file[0].header['OBSERVER'],
                             "instrument": file[0].header['INSTRUME'],
-                            "exposure": file[0].header['EXPTIME'],
                             "dates": [file[0].header['DATE-OBS']]
                         }
                     else:
@@ -47,9 +48,9 @@ def getData():
                         dates[date]['dates'].append(file[0].header['DATE-OBS'])
                         if(dates[date]['telescopeUsed'] != file[0].header['TELESCOP']):
                             print('telescope mismatch')
-                        if(dates[date]['exposure'] != file[0].header['EXPTIME']):
-                            print('Exposure mismatch')
-                            print(dates[date]['exposure'], file[0].header['EXPTIME'])
+                        if(dates[date]['instrument'] != file[0].header['INSTRUME']):
+                            print('Instrument mismatch')
+    print(a)
 
 
 
@@ -62,7 +63,6 @@ def getData():
             minute = time[1]
             second = time[2]
             time = int(hour) + int(minute)/60 + float(second)/3600
-            print(time)
             if time > highestTime['value']:
                 highestTime['string'] = f"{hour}:{minute}:{second}"
                 highestTime['value'] = time
