@@ -37,6 +37,9 @@ def getData():
                         dates[date] = {
                             "pictures": 1,
                             "telescopeUsed": file[0].header['TELESCOP'],
+                            "location": file[0].header['OBSERVER'],
+                            "instrument": file[0].header['INSTRUME'],
+                            "exposure": file[0].header['EXPTIME'],
                             "dates": [file[0].header['DATE-OBS']]
                         }
                     else:
@@ -44,6 +47,9 @@ def getData():
                         dates[date]['dates'].append(file[0].header['DATE-OBS'])
                         if(dates[date]['telescopeUsed'] != file[0].header['TELESCOP']):
                             print('telescope mismatch')
+                        if(dates[date]['exposure'] != file[0].header['EXPTIME']):
+                            print('Exposure mismatch')
+                            print(dates[date]['exposure'], file[0].header['EXPTIME'])
 
 
 
