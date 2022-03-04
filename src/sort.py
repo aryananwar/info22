@@ -7,34 +7,38 @@ dates = {}
 
 class Sort:
     def organize(self):
-        for file in os.listdir('fits'):
+        for file in os.listdir('../fits'):
             filename = file
             if 'tmp' not in file and '.fits' in file:
                 if file == '.DS_Store':
                     continue
-                file = fits.open(f"./fits/{file}")
+                file = fits.open(f"../fits/{file}")
                 date = file[0].header['DATE-OBS'].split('T')[0]
-                if date not in os.listdir('fits'):
+                if 'TIME-OBS' in file[0].header:
+                    time = 'T' + file[0].header['TIME-OBS'].replace(':', '-')
+                else:
+                    time = ''
+                if date not in os.listdir('../fits'):
                     try:
-                        os.mkdir(f"./fits/{date}")
+                        os.mkdir(f"../fits/{date}")
                     except Exception as e:
                         print(e)
                         pass
-                    os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}.fits")
+                    os.rename(f"../fits/{filename}", f"../fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
                 else:   
-                    os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}.fits")
+                    os.rename(f"../fits/{filename}", f"../fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
         return 'Files have been organized.'
     def getData(self):
         a = ''
-        for directory in os.listdir('./fits'):
+        for directory in os.listdir('../fits'):
             if os.path.isdir(f"fits/{directory}"):
                 print(directory)
-                for file in os.listdir(f"fits/{directory}"):
+                for file in os.listdir(f"../fits/{directory}"):
                     filename = file
                     if 'tmp' not in file and '.fits' in file:
                         if file == '.DS_Store':
                             continue          
-                        file = fits.open(f"./fits/{directory}/{file}")
+                        file = fits.open(f"../fits/{directory}/{file}")
                         date = file[0].header['DATE-OBS'].split('T')[0]
                         a += file[0].header['DATE-OBS'] + '\n'
                         bugs = 0
@@ -95,7 +99,13 @@ class Sort:
                                 continue          
                             file = fits.open(f"../fits/{directory}/{file}")
                             hdr = file[0].header
-                            writer.writerow([filename, hdr['DATE-OBS'].split('T')[0], hdr['DATE-OBS'].split('T')[1], hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME']])
+                            if('TIME-OBS' in file[0].header):
+                                time = file[0].header['TIME-OBS'].replace('-', ':')
+                                date = file[0].header['DATE-OBS']
+                            else:
+                                time = file[0].header['DATE-OBS'].split('T')[1]
+                                date = file[0].header['DATE-OBS'].split('T')[0]
+                            writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME']])
     
 
 
