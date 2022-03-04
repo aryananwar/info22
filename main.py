@@ -1,6 +1,7 @@
 # Import utils
 from src.downloader import downloader
 from src.converter import converter
+from src.obstructionDetector import obstructionDetector
 
 class umdInfo:
     def getQuery(self):
@@ -29,7 +30,9 @@ class umdInfo:
                 return self.getQuery()
             case "3":
                 print("[*] You selected: Analyze JPGs")
+                handler = obstructionDetector.obstructionDetector()
             case "4": 
+                print('[!] Thank you! Have a good day.')
                 quit()
             case _:
                 print("[!] Please enter one of the options!")
