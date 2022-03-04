@@ -3,6 +3,7 @@ from src.downloader import downloader
 from src.converter import converter
 from src.obstructionDetector import obstructionDetector
 from src.view import View
+from src.sort import Sort
 
 class umdInfo:
     def getQuery(self):
@@ -39,7 +40,9 @@ class umdInfo:
                 View.view_multiple()
             case "5":
                 print("[*] You selected: Organize FITS")
-                handler = obstructionDetector.obstructionDetector()
+                Sort.organize()
+                Sort.csvGen()
+                return self.getQuery()
             case "6": 
                 print('[!] Thank you! Have a good day.')
                 quit()

@@ -4,31 +4,30 @@ import csv
 import datetime
 dates = {}
 
-
 class Sort:
-    def organize(self):
-        for file in os.listdir('../fits'):
+    def organize():
+        for file in os.listdir('./fits'):
             filename = file
             if 'tmp' not in file and '.fits' in file:
                 if file == '.DS_Store':
                     continue
-                file = fits.open(f"../fits/{file}")
+                file = fits.open(f"./fits/{file}")
                 date = file[0].header['DATE-OBS'].split('T')[0]
                 if 'TIME-OBS' in file[0].header:
                     time = 'T' + file[0].header['TIME-OBS'].replace(':', '-')
                 else:
                     time = ''
-                if date not in os.listdir('../fits'):
+                if date not in os.listdir('./fits'):
                     try:
-                        os.mkdir(f"../fits/{date}")
+                        os.mkdir(f"./fits/{date}")
                     except Exception as e:
                         print(e)
                         pass
-                    os.rename(f"../fits/{filename}", f"../fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
+                    os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
                 else:   
-                    os.rename(f"../fits/{filename}", f"../fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
+                    os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
         return 'Files have been organized.'
-    def getData(self):
+    def getData():
         a = ''
         for directory in os.listdir('../fits'):
             if os.path.isdir(f"fits/{directory}"):
@@ -85,19 +84,19 @@ class Sort:
 
         return dates
     
-    def csvGen(self):
+    def csvGen():
         with open('data' + '.csv', 'w') as file:
             writer = csv.writer(file, delimiter =',', quotechar='"',  quoting=csv.QUOTE_ALL)
             writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT'])
-            for directory in os.listdir('../fits'):
-                if os.path.isdir(f"../fits/{directory}"):
+            for directory in os.listdir('./fits'):
+                if os.path.isdir(f"./fits/{directory}"):
                     print(directory)
-                    for file in os.listdir(f"../fits/{directory}"):
+                    for file in os.listdir(f"./fits/{directory}"):
                         filename = file
                         if 'tmp' not in file and '.fits' in file:
                             if file == '.DS_Store':
                                 continue          
-                            file = fits.open(f"../fits/{directory}/{file}")
+                            file = fits.open(f"./fits/{directory}/{file}")
                             hdr = file[0].header
                             if('TIME-OBS' in file[0].header):
                                 time = file[0].header['TIME-OBS'].replace('-', ':')
@@ -106,8 +105,3 @@ class Sort:
                                 time = file[0].header['DATE-OBS'].split('T')[1]
                                 date = file[0].header['DATE-OBS'].split('T')[0]
                             writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME']])
-    
-
-
-a = Sort()
-a.csvGen()
