@@ -4,18 +4,27 @@ import datetime
 dates = {}
 
 for file in os.listdir('fits'):
-    if 'tmp' not in file:            
+    filename = file
+    if 'tmp' not in file and '.fits' in file:
+        if file == '.DS_Store':
+            continue          
         file = fits.open(f"./fits/{file}")
-        date = file[0].header['DATE-LOC'].split('T')[0]
+        date = file[0].header['DATE-OBS'].split('T')[0]
         if date not in dates:
             dates[date] = {
                 "pictures": 1,
                 "telescopeUsed": file[0].header['TELESCOP'],
-                "dates": [file[0].header['DATE-LOC']]
+                "dates": [file[0].header['DATE-OBS']]
             }
+            try:
+                os.mkdir(f"./fits/{date}")
+            except:
+                pass
+            os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}.fits")
         else:
             dates[date]['pictures'] += 1
-            dates[date]['dates'].append(file[0].header['DATE-LOC'])
+            dates[date]['dates'].append(file[0].header['DATE-OBS'])
+            os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}.fits")
             if(dates[date]['telescopeUsed'] != file[0].header['TELESCOP']):
                 print('telescope mismatch')
         
