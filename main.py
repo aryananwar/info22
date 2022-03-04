@@ -4,15 +4,16 @@ from src.converter import converter
 from src.obstructionDetector import obstructionDetector
 from src.view import View
 from src.sort import Sort
+from colorama import Fore
 
 class umdInfo:
     def getQuery(self):
-        response = input(
+        response = input(Fore.MAGENTA +
             """
 [!] Select What you would like to do
 1) Download FITS images
 2) Convert FITS images to JPGs
-3) Analyze JPGs
+3) Analyze FITS Images
 4) View FITS
 5) Organize FITS
 6) Close Tool
@@ -23,28 +24,32 @@ class umdInfo:
         # Handle input
         match response:
             case "1":
-                print("[*] You selected: Download FITS images")
+                print(Fore.CYAN + "[*] You selected: Download FITS images")
                 handler = downloader.downloadFits()
-                print("[!] Finished downloading FITS files")
+                print(Fore.GREEN + "[!] Finished downloading FITS files")
                 return self.getQuery()
             case "2":
-                print("[*] You selected: Convert FITS images to JPGs")
+                print(Fore.CYAN + "[*] You selected: Convert FITS images to JPGs")
                 handler = converter.convertFITS()
-                print("[!] Finished converting FITS files")
+                print(Fore.GREEN + "[!] Finished converting FITS files")
                 return self.getQuery()
             case "3":
-                print("[*] You selected: Analyze JPGs")
-                handler = obstructionDetector.obstructionDetector()
+                print(Fore.CYAN + "[*] You selected: Analyze FITS Images")
+                handler = obstructionDetector.obstructionDetector2()
+                print(Fore.GREEN + "[!] Finished analyzing FITS files")
+                return self.getQuery()
             case "4":
-                print("[*] You selected: View FITS")
+                print(Fore.CYAN + "[*] You selected: View FITS")
                 View.view_multiple()
+                return self.getQuery()
             case "5":
-                print("[*] You selected: Organize FITS")
+                print(Fore.CYAN + "[*] You selected: Organize FITS")
                 Sort.organize()
                 Sort.csvGen()
+                print(Fore.GREEN + "[!] Finished organizing FITS files")
                 return self.getQuery()
             case "6": 
-                print('[!] Thank you! Have a good day.')
+                print(Fore.GREEN + '[!] Thank you! Have a good day.')
                 quit()
             case _:
                 print("[!] Please enter one of the options!")
