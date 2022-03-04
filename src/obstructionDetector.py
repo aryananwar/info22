@@ -2,6 +2,7 @@
 import cv2 as cv
 import numpy as np
 import os
+from astropy.io import fits
 
 class obstructionDetector:
     def obstructionDetector():
@@ -54,5 +55,11 @@ class obstructionDetector:
                 keypoints = detector.detect(segmented_image)
 
                 print("[*] Number of obstructions detected in " + jpg + ": " + str(len(keypoints)))
-            except:
+                filename = jpg.split('.jpg')[0]
+                file = fits.open(f"./fits/{filename.split('T')[0]}/{filename}", mode='update')
+                print(file[0].header)
+                file[0].header.set('bugs', len(keypoints))
+                file.close()
+            except Exception as e:
+                print(e)
                 pass
