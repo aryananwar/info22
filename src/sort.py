@@ -34,7 +34,6 @@ class Sort:
         a = ''
         for directory in os.listdir('../fits'):
             if os.path.isdir(f"../fits/{directory}"):
-                print(directory)
                 for file in os.listdir(f"../fits/{directory}"):
                     filename = file
                     if 'tmp' not in file and '.fits' in file:
@@ -78,7 +77,6 @@ class Sort:
             lowestTime = {"value": 24, "string": None}
             highestTime = {"value": 0, "string": None}
             for iso in value['dates']:
-                print(value)
                 if not value['time']: 
                     time = iso.split('T')[1].split('-')
                 else:
@@ -86,7 +84,6 @@ class Sort:
                 hour = time[0]
                 minute = time[1]
                 second = time[2]
-                print(time)
                 time = int(hour) + int(minute)/60 + float(second)/3600
                 if time > highestTime['value']:
                     highestTime['string'] = f"{hour}:{minute}:{second}"
@@ -110,7 +107,6 @@ class Sort:
             writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP', 'INFO'])
             for directory in os.listdir('./fits'):
                 if os.path.isdir(f"./fits/{directory}"):
-                    print(directory)
                     for file in os.listdir(f"./fits/{directory}"):
                         filename = file
                         if 'tmp' not in file and '.fits' in file:
@@ -123,28 +119,19 @@ class Sort:
                                 date = file[0].header['DATE-OBS']
                                 isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H:%M:%S')
                                 unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
-                                print(unix, date, time)
                                 unix = int(unix//3600 * 3600)
                             else:
                                 time = file[0].header['DATE-OBS'].split('T')[1]
                                 date = file[0].header['DATE-OBS'].split('T')[0]
                                 isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H-%M-%S.%fZ')
                                 unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
-                                print(unix, date, time)
                                 unix = int(unix//3600 * 3600)
                             for item in self.weather:
                                 if item['dt'] == unix:
                                     temp = item
                                     break
-                            print(temp)
                             if 'BUGS' in hdr:
                                 bugs = hdr['BUGS']
                             else:
                                 bugs = 0 
                             writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
-
-
-a = Sort()
-
-b = a.getData()
-print(b)
