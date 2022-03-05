@@ -125,7 +125,7 @@ class Sort:
                             else:
                                 time = file[0].header['DATE-OBS'].split('T')[1]
                                 date = file[0].header['DATE-OBS'].split('T')[0]
-                                isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H-%M-%S.%fZ')
+                                isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H-%M-%S.%f')
                                 unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
                                 unix = int(unix//3600 * 3600)
                             for item in self.weather:
@@ -136,4 +136,4 @@ class Sort:
                                 bugs = hdr['BUGS']
                             else:
                                 bugs = 0 
-                            writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
+                            writer.writerow([filename, date, time.replace('-', ':'), hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
