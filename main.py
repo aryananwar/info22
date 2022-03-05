@@ -41,22 +41,17 @@ class umdInfo:
                 print(Fore.GREEN + "[!] Finished analyzing FITS files")
                 return self.getQuery()
             case "4":
-                print(Fore.CYAN + "[*] You selected: Generate CSV")
+                print(Fore.CYAN + "[*] You selected: Generate CSV and Metadata")
                 a = Sort()
                 a.csvGen()
-                print(Fore.GREEN + "[!] Finished Generating CSV File")
+                a.getData()
+                print(Fore.GREEN + "[!] Finished Generating CSV and Metadata")
                 return self.getQuery()
             case "5":
-                print(Fore.CYAN + "[*] You selected: Generate Metadata")
-                a = Sort()
-                a.getData()
-                print(Fore.GREEN + "[!] Finished Generating Metadata")
-                return self.getQuery()
-            case "6":
                 print(Fore.CYAN + "[*] You selected: View FITS")
                 View.view_multiple()
                 return self.getQuery()
-            case "7": 
+            case "6": 
                 print(Fore.GREEN + '[!] Thank you! Have a good day.')
                 quit()
             case _:
