@@ -44,8 +44,9 @@ class umdInfo:
                 return self.getQuery()
             case "5":
                 print(Fore.CYAN + "[*] You selected: Organize FITS")
-                Sort.organize()
-                Sort.csvGen()
+                a = Sort()
+                a.organize()
+                a.csvGen()
                 print(Fore.GREEN + "[!] Finished organizing FITS files")
                 return self.getQuery()
             case "6": 

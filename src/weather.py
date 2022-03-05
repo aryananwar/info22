@@ -19,8 +19,9 @@ class Weather:
         x = requests.get('http://history.openweathermap.org/data/2.5/history/city'+
                             '?lat=' + str(lat) + '&lon=' + str(lon) +  '&type=hour&start=' + str(unixTime) + '&end=' + str(unixTime) +
                             '&units=metric&appid=' + key)
+        print(x.text)
         a = json.loads(x.text)
-
+        print(a)
         arr = []
         arr.append(a['list'][0]['main']['temp'])
         arr.append(a['list'][0]['main']['feels_like'])
@@ -40,4 +41,3 @@ lat =  '38.980666'
 lon =  '-76.9369189'
 
 # this is how u use it @rohit
-#Weather.get_weather_from_date('1646373600', lat, lon)
