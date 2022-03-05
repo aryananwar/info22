@@ -18,7 +18,7 @@ class obstructionDetector:
                             # Crop and save image as JPGs
                             file = fits.open(os.path.join(f"./fits/{directory}", sample))
                             img_data = file[0].data
-                            img_data = img_data[240:750, 350:1100]
+                            img_data = img_data[240:700, 350:1100]
                             norm = (img_data.astype(np.float)-img_data.min())*255.0 / (img_data.max()-img_data.min())
                             Image.fromarray(norm.astype(np.uint8)).save(os.path.join("./tmp") + ".jpg")
                             print("[*] Processing: " + sample)
@@ -40,7 +40,7 @@ class obstructionDetector:
                                 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 100, 0.1)
 
                                 # Create color clusters
-                                k = 9
+                                k = 8
                                 _, labels, (centers) = cv.kmeans(pixels, k, None, criteria, 10, cv.KMEANS_RANDOM_CENTERS)
 
                                 # convert back to 8 bit values
@@ -55,19 +55,27 @@ class obstructionDetector:
                                 # Setup SimpleBlobDetector parameters.
                                 params = cv.SimpleBlobDetector_Params()
 
-                                params.minThreshold = 75;
-                                params.maxThreshold = 100;
+                                params.minThreshold = 85;
+                                params.maxThreshold = 255;
                                 params.filterByArea = True
-                                params.minArea = 40
+                                params.minArea = 45
                                 params.filterByCircularity = True
-                                params.minCircularity = 0.1
+                                params.minCircularity = 0.4
                                 params.filterByConvexity = True
-                                params.minConvexity = 0.87
+                                params.minConvexity = 0.9
                                 params.filterByInertia = True
-                                params.minInertiaRatio = 0.01
+                                params.minInertiaRatio = 0.1
 
                                 detector = cv.SimpleBlobDetector_create(params)
                                 keypoints = detector.detect(segmented_image)
+
+                                # Export result
+                                result = cv.drawKeypoints(segmented_image, keypoints, np.array([]), (0,0,255), cv.DrawMatchesFlags_DRAW_RICH_KEYPOINTS)
+                                if os.path.isdir('./fits/out') == False:
+                                    # If the output directory does not exist, create it
+                                    print('[*] Creating output directory "fits/out"...')
+                                    os.mkdir('./fits/out')
+                                cv.imwrite("./fits/out/" + sample + ".jpg", result)
 
                                 print("[*] Number of obstructions detected in " + sample + ": " + str(len(keypoints)))
                                 filename = sample.split('.jpg')[0]

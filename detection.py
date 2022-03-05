@@ -33,8 +33,8 @@ segmented_image = segmented_image.reshape(image.shape)
 # Setup SimpleBlobDetector parameters.
 params = cv.SimpleBlobDetector_Params()
 
-params.minThreshold = 75;
-params.maxThreshold = 100;
+params.minThreshold = 100;
+params.maxThreshold = 200;
 params.filterByArea = True
 params.minArea = 40
 params.filterByCircularity = True
