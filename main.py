@@ -26,14 +26,15 @@ class umdInfo:
                 print(Fore.CYAN + "[*] You selected: Download FITS images")
                 handler = downloader.downloadFits()
                 print(Fore.CYAN + '\n[!] Sorting files')
-                a = Sort()
-                a.organize()
                 print(Fore.GREEN + "[!] Finished downloading FITS files")
                 return self.getQuery()
             case "2":
                 print(Fore.CYAN + "[*] You selected: Analyze FITS Images")
+                a = Sort()
+                a.organize()
                 handler = obstructionDetector.obstructionDetector()
                 print(Fore.GREEN + "[!] Finished analyzing FITS files")
+                
                 return self.getQuery()
             case "3":
                 print(Fore.CYAN + "[*] You selected: Export Results")

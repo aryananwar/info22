@@ -113,6 +113,8 @@ class Sort:
                 writer = csv.writer(file, delimiter =',', quotechar='"',  quoting=csv.QUOTE_ALL)
                 writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP', 'INFO'])
                 for directory in os.listdir('./fits'):
+                    if directory == 'out':
+                        continue
                     if os.path.isdir(f"./fits/{directory}"):
                         for file in os.listdir(f"./fits/{directory}"):
                             filename = file
