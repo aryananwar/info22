@@ -96,7 +96,7 @@ class Sort:
     def csvGen(self):
         with open('data' + '.csv', 'w') as file:
             writer = csv.writer(file, delimiter =',', quotechar='"',  quoting=csv.QUOTE_ALL)
-            writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP'])
+            writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP', 'INFO'])
             for directory in os.listdir('./fits'):
                 if os.path.isdir(f"./fits/{directory}"):
                     print(directory)
@@ -130,4 +130,4 @@ class Sort:
                                 bugs = hdr['BUGS']
                             else:
                                 bugs = 0 
-                            writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp']])
+                            writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
