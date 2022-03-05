@@ -14,10 +14,9 @@ class umdInfo:
 1) Download FITS images
 2) Organize FITS
 3) Analyze FITS Images
-4) Generate CSV
-5) Generate Metadata
-6) View FITS
-7) Close Tool
+4) Generate CSV and Metadata
+5) View FITS
+6) Close Tool
 
 => """
         )
