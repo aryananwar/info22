@@ -11,69 +11,73 @@ class Sort:
             self.weather = json.load(f)
     def organize(self):
         for file in os.listdir('./fits'):
-            filename = file
-            if 'tmp' not in file and '.fits' in file:
-                if file == '.DS_Store':
-                    continue
-                file = fits.open(f"./fits/{file}")
-                file.close()
-                date = file[0].header['DATE-OBS'].split('T')[0]
-                if 'TIME-OBS' in file[0].header:
-                    time = 'T' + file[0].header['TIME-OBS'].replace(':', '-')
-                else:
-                    time = ''
-                if date not in os.listdir('./fits'):
-                    try:
-                        os.mkdir(f"./fits/{date}")
-                    except Exception as e:
-                        print(e)
-                        pass
-                    os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
-                else:   
-                    os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
+            try:
+                filename = file
+                if 'tmp' not in file and '.fits' in file:
+                    if file == '.DS_Store':
+                        continue
+                    file = fits.open(f"./fits/{file}")
+                    file.close()
+                    date = file[0].header['DATE-OBS'].split('T')[0]
+                    if 'TIME-OBS' in file[0].header:
+                        time = 'T' + file[0].header['TIME-OBS'].replace(':', '-')
+                    else:
+                        time = ''
+                    if date not in os.listdir('./fits'):
+                        try:
+                            os.mkdir(f"./fits/{date}")
+                        except Exception as e:
+                            print(e)
+                            pass
+                        os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
+                    else:   
+                        os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
+            except Exception as e:
+                print("Error handling " + file + ": " + e)
         return 'Files have been organized.'
+
     def getData(self):
         a = ''
         for directory in os.listdir('./fits'):
-            if os.path.isdir(f"./fits/{directory}"):
-                for file in os.listdir(f"./fits/{directory}"):
-                    filename = file
-                    if 'tmp' not in file and '.fits' in file:
-                        if file == '.DS_Store':
-                            continue          
-                        file = fits.open(f"./fits/{directory}/{file}")
-                        date = file[0].header['DATE-OBS'].split('T')[0]
-                        a += file[0].header['DATE-OBS'] + '\n'
-                        bugs = 0
-                        if file[0].header['bugs']:
-                            bugs = 1
-                        if date not in dates:
-                            dates[date] = {
-                                "pictures": 1,
-                                "telescopeUsed": file[0].header['TELESCOP'],
-                                "location": file[0].header['OBSERVER'],
-                                "instrument": file[0].header['INSTRUME'],
-                                "dates": [file[0].header['DATE-OBS']],
-                                "bugs": bugs
-                            }
-                        else:
-                            dates[date]['pictures'] += 1
-                            dates[date]['dates'].append(file[0].header['DATE-OBS'])
-                            if 'bugs' in dates[date]:
-                                dates[date]['bugs'] += bugs
+            try:
+                if os.path.isdir(f"./fits/{directory}"):
+                    for file in os.listdir(f"./fits/{directory}"):
+                        filename = file
+                        if 'tmp' not in file and '.fits' in file:
+                            if file == '.DS_Store':
+                                continue          
+                            file = fits.open(f"./fits/{directory}/{file}")
+                            date = file[0].header['DATE-OBS'].split('T')[0]
+                            a += file[0].header['DATE-OBS'] + '\n'
+                            bugs = 0
+                            if file[0].header['bugs']:
+                                bugs = 1
+                            if date not in dates:
+                                dates[date] = {
+                                    "pictures": 1,
+                                    "telescopeUsed": file[0].header['TELESCOP'],
+                                    "location": file[0].header['OBSERVER'],
+                                    "instrument": file[0].header['INSTRUME'],
+                                    "dates": [file[0].header['DATE-OBS']],
+                                    "bugs": bugs
+                                }
                             else:
-                                dates[date]['bugs'] = bugs
-                            if(dates[date]['telescopeUsed'] != file[0].header['TELESCOP']):
-                                print('telescope mismatch')
-                            if(dates[date]['instrument'] != file[0].header['INSTRUME']):
-                                print('Instrument mismatch')
-                        if 'TIME-OBS' in file[0].header:
-                            dates[date]['time'] = file[0].header['TIME-OBS'].replace(':', '-')
-                        else:
-                            dates[date]['time'] = None
-
-
-
+                                dates[date]['pictures'] += 1
+                                dates[date]['dates'].append(file[0].header['DATE-OBS'])
+                                if 'bugs' in dates[date]:
+                                    dates[date]['bugs'] += bugs
+                                else:
+                                    dates[date]['bugs'] = bugs
+                                if(dates[date]['telescopeUsed'] != file[0].header['TELESCOP']):
+                                    print('telescope mismatch')
+                                if(dates[date]['instrument'] != file[0].header['INSTRUME']):
+                                    print('Instrument mismatch')
+                            if 'TIME-OBS' in file[0].header:
+                                dates[date]['time'] = file[0].header['TIME-OBS'].replace(':', '-')
+                            else:
+                                dates[date]['time'] = None
+            except Exception as e:
+                print("Error handling directory" + directory + ": " + e)
 
         for date, value in dates.items():
             lowestTime = {"value": 24, "string": None}
@@ -104,36 +108,39 @@ class Sort:
         return dates
     
     def csvGen(self):
-        with open('data' + '.csv', 'w') as file:
-            writer = csv.writer(file, delimiter =',', quotechar='"',  quoting=csv.QUOTE_ALL)
-            writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP', 'INFO'])
-            for directory in os.listdir('./fits'):
-                if os.path.isdir(f"./fits/{directory}"):
-                    for file in os.listdir(f"./fits/{directory}"):
-                        filename = file
-                        if 'tmp' not in file and '.fits' in file:
-                            if file == '.DS_Store':
-                                continue
-                            file = fits.open(f"./fits/{directory}/{file}")
-                            hdr = file[0].header
-                            if('TIME-OBS' in file[0].header):
-                                time = file[0].header['TIME-OBS'].replace('-', ':')
-                                date = file[0].header['DATE-OBS']
-                                isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H:%M:%S')
-                                unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
-                                unix = int(unix//3600 * 3600)
-                            else:
-                                time = file[0].header['DATE-OBS'].split('T')[1]
-                                date = file[0].header['DATE-OBS'].split('T')[0]
-                                isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H-%M-%S.%f')
-                                unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
-                                unix = int(unix//3600 * 3600)
-                            for item in self.weather:
-                                if item['dt'] == unix:
-                                    temp = item
-                                    break
-                            if 'BUGS' in hdr:
-                                bugs = hdr['BUGS']
-                            else:
-                                bugs = 0 
-                            writer.writerow([filename, date, time.replace('-', ':'), hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
+        try:
+            with open('data' + '.csv', 'w') as file:
+                writer = csv.writer(file, delimiter =',', quotechar='"',  quoting=csv.QUOTE_ALL)
+                writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP', 'INFO'])
+                for directory in os.listdir('./fits'):
+                    if os.path.isdir(f"./fits/{directory}"):
+                        for file in os.listdir(f"./fits/{directory}"):
+                            filename = file
+                            if 'tmp' not in file and '.fits' in file:
+                                if file == '.DS_Store':
+                                    continue
+                                file = fits.open(f"./fits/{directory}/{file}")
+                                hdr = file[0].header
+                                if('TIME-OBS' in file[0].header):
+                                    time = file[0].header['TIME-OBS'].replace('-', ':')
+                                    date = file[0].header['DATE-OBS']
+                                    isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H:%M:%S')
+                                    unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
+                                    unix = int(unix//3600 * 3600)
+                                else:
+                                    time = file[0].header['DATE-OBS'].split('T')[1]
+                                    date = file[0].header['DATE-OBS'].split('T')[0]
+                                    isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H-%M-%S.%f')
+                                    unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
+                                    unix = int(unix//3600 * 3600)
+                                for item in self.weather:
+                                    if item['dt'] == unix:
+                                        temp = item
+                                        break
+                                if 'BUGS' in hdr:
+                                    bugs = hdr['BUGS']
+                                else:
+                                    bugs = 0 
+                                writer.writerow([filename, date, time.replace('-', ':'), hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
+        except Exception as e:
+                print("Error writing CSV: " + e)
