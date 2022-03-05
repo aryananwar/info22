@@ -12,11 +12,10 @@ class umdInfo:
             """
 [!] Select What you would like to do
 1) Download FITS images
-2) Organize FITS
-3) Analyze FITS Images
-4) Generate CSV and Metadata
-5) View FITS
-6) Close Tool
+2) Analyze FITS Images
+3) Export Results
+4) View FITS
+5) Close Tool
 
 => """
         )
@@ -26,31 +25,27 @@ class umdInfo:
             case "1":
                 print(Fore.CYAN + "[*] You selected: Download FITS images")
                 handler = downloader.downloadFits()
+                print(Fore.CYAN + '\n[!] Sorting files')
+                a = Sort()
+                a.organize()
                 print(Fore.GREEN + "[!] Finished downloading FITS files")
                 return self.getQuery()
             case "2":
-                print(Fore.CYAN + "[*] You selected: Organize FITS")
-                a = Sort()
-                a.organize()
-                print(Fore.GREEN + "[!] Finished organizing FITS files")
-                return self.getQuery()
-            case "3":
                 print(Fore.CYAN + "[*] You selected: Analyze FITS Images")
                 handler = obstructionDetector.obstructionDetector2()
                 print(Fore.GREEN + "[!] Finished analyzing FITS files")
                 return self.getQuery()
-            case "4":
-                print(Fore.CYAN + "[*] You selected: Generate CSV and Metadata")
-                a = Sort()
+            case "3":
+                print(Fore.CYAN + "[*] You selected: Export Results")
                 a.csvGen()
                 a.getData()
-                print(Fore.GREEN + "[!] Finished Generating CSV and Metadata")
+                print(Fore.GREEN + '[!] Finished Exporting results as "data.csv"')
                 return self.getQuery()
-            case "5":
+            case "4":
                 print(Fore.CYAN + "[*] You selected: View FITS")
                 View.view_multiple()
                 return self.getQuery()
-            case "6": 
+            case "5": 
                 print(Fore.GREEN + '[!] Thank you! Have a good day.')
                 quit()
             case _:
