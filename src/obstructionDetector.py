@@ -55,14 +55,14 @@ class obstructionDetector:
                                 # Setup SimpleBlobDetector parameters.
                                 params = cv.SimpleBlobDetector_Params()
 
-                                params.minThreshold = 85;
-                                params.maxThreshold = 255;
+                                params.minThreshold = 30
+                                params.maxThreshold = 255
                                 params.filterByArea = True
-                                params.minArea = 45
+                                params.minArea = 30
                                 params.filterByCircularity = True
-                                params.minCircularity = 0.4
+                                params.minCircularity = 0.1
                                 params.filterByConvexity = True
-                                params.minConvexity = 0.9
+                                params.minConvexity = 0.2
                                 params.filterByInertia = True
                                 params.minInertiaRatio = 0.1
 
@@ -83,7 +83,6 @@ class obstructionDetector:
                                 file[0].header.set('bugs', len(keypoints))
                                 file.close()
                             except Exception as e:
-                                print(e)
                                 pass
                         except Exception as e:
                             print(e)
