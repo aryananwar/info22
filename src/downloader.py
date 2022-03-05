@@ -22,5 +22,5 @@ class downloader:
                     try:
                         wget.download("https://mdallsky.astro.umd.edu/masn01-archive/" + fit[2:6] + fit[1:], out="fits/" + fit.split("/")[3]) # Parse each line and structure a valid url to wget
                     except Exception as e:
-                        print(e)
+                        print("Error grabbing " + fit + ": " + e)
         return
