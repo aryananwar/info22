@@ -32,7 +32,7 @@ class umdInfo:
                 return self.getQuery()
             case "2":
                 print(Fore.CYAN + "[*] You selected: Analyze FITS Images")
-                handler = obstructionDetector.obstructionDetector2()
+                handler = obstructionDetector.obstructionDetector()
                 print(Fore.GREEN + "[!] Finished analyzing FITS files")
                 return self.getQuery()
             case "3":

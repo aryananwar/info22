@@ -143,4 +143,4 @@ class Sort:
                                     bugs = 0 
                                 writer.writerow([filename, date, time.replace('-', ':'), hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
         except Exception as e:
-                print("Error writing CSV: " + e)
+            print("Error writing CSV: " + e)
