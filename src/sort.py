@@ -6,7 +6,9 @@ import json
 dates = {}
 
 class Sort:
-
+    def __init__(self):
+        with open('./data.json', 'r') as f:
+            self.weather = json.load(f)
     def organize(self):
         for file in os.listdir('./fits'):
             filename = file
@@ -32,14 +34,14 @@ class Sort:
         return 'Files have been organized.'
     def getData(self):
         a = ''
-        for directory in os.listdir('../fits'):
-            if os.path.isdir(f"../fits/{directory}"):
-                for file in os.listdir(f"../fits/{directory}"):
+        for directory in os.listdir('./fits'):
+            if os.path.isdir(f"./fits/{directory}"):
+                for file in os.listdir(f"./fits/{directory}"):
                     filename = file
                     if 'tmp' not in file and '.fits' in file:
                         if file == '.DS_Store':
                             continue          
-                        file = fits.open(f"../fits/{directory}/{file}")
+                        file = fits.open(f"./fits/{directory}/{file}")
                         date = file[0].header['DATE-OBS'].split('T')[0]
                         a += file[0].header['DATE-OBS'] + '\n'
                         bugs = 0
@@ -96,7 +98,7 @@ class Sort:
             del dates[date]['dates']
 
         for date, value in dates.items():
-            with open(f"../fits/{date}/metadata.json", 'w') as f:
+            with open(f"./fits/{date}/metadata.json", 'w') as f:
                 json.dump(value, f)
 
         return dates
