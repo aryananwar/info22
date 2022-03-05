@@ -6,6 +6,8 @@ class View:
     def view_multiple():
         folder = input('Enter path to fits folder')
         for directory in os.listdir(folder):
+            if directory == 'out':
+                continue
             if os.path.isdir(f"{folder}/{directory}"):
                 for f in os.listdir(f"{folder}/{directory}"):
                     if 'tmp' in f:

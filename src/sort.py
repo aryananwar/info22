@@ -10,7 +10,10 @@ class Sort:
         with open('./data.json', 'r') as f:
             self.weather = json.load(f)
     def organize(self):
+        print('Organizing All FITS Files Now')
         for file in os.listdir('./fits'):
+            if 'out' in file:
+                continue
             try:
                 filename = file
                 if 'tmp' not in file and '.fits' in file:
@@ -39,6 +42,8 @@ class Sort:
     def getData(self):
         a = ''
         for directory in os.listdir('./fits'):
+            if directory == 'out':
+                continue
             try:
                 if os.path.isdir(f"./fits/{directory}"):
                     for file in os.listdir(f"./fits/{directory}"):
@@ -84,9 +89,15 @@ class Sort:
             highestTime = {"value": 0, "string": None}
             for iso in value['dates']:
                 if not value['time']: 
-                    time = iso.split('T')[1].split('-')
+                    if ':' in iso:
+                        time = iso.split('T')[1].split(':')
+                    else:
+                        time = iso.split('T')[1].split('-')
                 else:
-                    time = value['time'].split('-')
+                    if ':' in value['time']:
+                        time = value['item'].split(':')
+                    else:
+                        time = value['time'].split('-')
                 hour = time[0]
                 minute = time[1]
                 second = time[2]
@@ -111,12 +122,14 @@ class Sort:
         try:
             with open('data' + '.csv', 'w') as file:
                 writer = csv.writer(file, delimiter =',', quotechar='"',  quoting=csv.QUOTE_ALL)
-                writer.writerow(['FILE NAME', 'DATE', 'TIME', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP', 'INFO'])
+                writer.writerow(['FILE NAME', 'DATE', 'TIME', 'DAY/NIGHT', 'EXPTIME', 'LOCATION', 'INSTRUMENT', 'BUGS', 'UNIX', 'TEMP', 'CLOUD %', 'VISIBILITY', 'INFO'])
                 for directory in os.listdir('./fits'):
                     if directory == 'out':
                         continue
                     if os.path.isdir(f"./fits/{directory}"):
                         for file in os.listdir(f"./fits/{directory}"):
+                            if file == 'metadata.json':
+                                continue
                             filename = file
                             if 'tmp' not in file and '.fits' in file:
                                 if file == '.DS_Store':
@@ -126,11 +139,24 @@ class Sort:
                                 if('TIME-OBS' in file[0].header):
                                     time = file[0].header['TIME-OBS'].replace('-', ':')
                                     date = file[0].header['DATE-OBS'].replace(':', '-')
+                                    dayNight = 0
+                                    timeSplit = time.split(':')
+                                    if 7 <= int(timeSplit[0]) <= 19:
+                                        dayNight = 'Day'
+                                    else:
+                                        dayNight = 'Night'
+                                    
                                     isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H:%M:%S')
                                     unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
                                     unix = int(unix//3600 * 3600)
                                 else:
                                     time = file[0].header['DATE-OBS'].split('T')[1].replace(':', '-')
+                                    dayNight = 0
+                                    timeSplit = time.split('-')
+                                    if 7 <= int(timeSplit[0]) <= 19:
+                                        dayNight = 'Day'
+                                    else:
+                                        dayNight = 'Night'
                                     date = file[0].header['DATE-OBS'].split('T')[0].replace(':', '-')
                                     isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H-%M-%S.%f')
                                     unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
@@ -142,7 +168,7 @@ class Sort:
                                 if 'BUGS' in hdr:
                                     bugs = hdr['BUGS']
                                 else:
-                                    bugs = 0 
-                                writer.writerow([filename, date, time.replace('-', ':'), hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
+                                    bugs = 0
+                                writer.writerow([filename, date, time.replace('-', ':'), dayNight, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['clouds']['all'], temp['visibility'], temp['weather'][0]['description']])
         except Exception as e:
             print("Error writing CSV: " + str(e))
