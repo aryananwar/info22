@@ -1,10 +1,20 @@
+from matplotlib import use
 import matplotlib.pyplot as plt
 from astropy.io import fits
 import os
 
+from numpy import true_divide
+
 class View:
     def view_multiple():
-        folder = input('Enter path to fits folder')
+        folder = './fits'
+        useDefault = input('Use Default Path? (./fits/) (y/n)\n')
+        if useDefault == 'y' or useDefault == 'Y':
+            useDefault = True
+        else:
+            useDefault = False
+        if not useDefault:
+            folder = input('Enter path to fits folder')
         for directory in os.listdir(folder):
             if directory == 'out':
                 continue
