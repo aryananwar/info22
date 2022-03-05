@@ -2,12 +2,9 @@ import matplotlib.pyplot as plt
 from astropy.io import fits
 import os
 
-
 class View:
-
     def view_multiple():
         folder = input('Enter path to fits folder')
-
         for directory in os.listdir(folder):
             if os.path.isdir(f"{folder}/{directory}"):
                 for f in os.listdir(f"{folder}/{directory}"):

@@ -29,11 +29,11 @@ class Sort:
                         except Exception as e:
                             print(e)
                             pass
-                        os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
+                        os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}".replace(':', '-') + ".fits")
                     else:   
-                        os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}.fits")
+                        os.rename(f"./fits/{filename}", f"./fits/{date}/{file[0].header['DATE-OBS']}{time}".replace(':', '-') + ".fits")
             except Exception as e:
-                print("Error handling " + file + ": " + e)
+                print("Error handling " + str(file) + ": " + str(e))
         return 'Files have been organized.'
 
     def getData(self):
@@ -77,7 +77,7 @@ class Sort:
                             else:
                                 dates[date]['time'] = None
             except Exception as e:
-                print("Error handling directory" + directory + ": " + e)
+                print("Error handling directory" + str(directory) + ": " + str(e))
 
         for date, value in dates.items():
             lowestTime = {"value": 24, "string": None}
@@ -143,4 +143,4 @@ class Sort:
                                     bugs = 0 
                                 writer.writerow([filename, date, time.replace('-', ':'), hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
         except Exception as e:
-            print("Error writing CSV: " + e)
+            print("Error writing CSV: " + str(e))

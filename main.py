@@ -37,6 +37,7 @@ class umdInfo:
                 return self.getQuery()
             case "3":
                 print(Fore.CYAN + "[*] You selected: Export Results")
+                a = Sort()
                 a.csvGen()
                 a.getData()
                 print(Fore.GREEN + '[!] Finished Exporting results as "data.csv"')
