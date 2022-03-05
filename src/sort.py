@@ -125,13 +125,13 @@ class Sort:
                                 hdr = file[0].header
                                 if('TIME-OBS' in file[0].header):
                                     time = file[0].header['TIME-OBS'].replace('-', ':')
-                                    date = file[0].header['DATE-OBS']
+                                    date = file[0].header['DATE-OBS'].replace(':', '-')
                                     isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H:%M:%S')
                                     unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
                                     unix = int(unix//3600 * 3600)
                                 else:
-                                    time = file[0].header['DATE-OBS'].split('T')[1]
-                                    date = file[0].header['DATE-OBS'].split('T')[0]
+                                    time = file[0].header['DATE-OBS'].split('T')[1].replace(':', '-')
+                                    date = file[0].header['DATE-OBS'].split('T')[0].replace(':', '-')
                                     isots = datetime.datetime.strptime(f"{date}T{time}", '%Y-%m-%dT%H-%M-%S.%f')
                                     unix = (isots - datetime.datetime(1970, 1, 1)).total_seconds()
                                     unix = int(unix//3600 * 3600)
