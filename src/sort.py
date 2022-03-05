@@ -3,13 +3,10 @@ import os
 import csv
 import datetime
 import json
-from src.weather import Weather
 dates = {}
 
 class Sort:
-    def __init__(self):
-        with open('./data.json', 'r') as f:
-            self.weather = json.load(f)
+
     def organize(self):
         for file in os.listdir('./fits'):
             filename = file
@@ -36,7 +33,7 @@ class Sort:
     def getData(self):
         a = ''
         for directory in os.listdir('../fits'):
-            if os.path.isdir(f"fits/{directory}"):
+            if os.path.isdir(f"../fits/{directory}"):
                 print(directory)
                 for file in os.listdir(f"../fits/{directory}"):
                     filename = file
@@ -69,6 +66,11 @@ class Sort:
                                 print('telescope mismatch')
                             if(dates[date]['instrument'] != file[0].header['INSTRUME']):
                                 print('Instrument mismatch')
+                        if 'TIME-OBS' in file[0].header:
+                            dates[date]['time'] = file[0].header['TIME-OBS'].replace(':', '-')
+                        else:
+                            dates[date]['time'] = None
+
 
 
 
@@ -76,10 +78,15 @@ class Sort:
             lowestTime = {"value": 24, "string": None}
             highestTime = {"value": 0, "string": None}
             for iso in value['dates']:
-                time = iso.split('T')[1].split('-')
+                print(value)
+                if not value['time']: 
+                    time = iso.split('T')[1].split('-')
+                else:
+                    time = value['time'].split('-')
                 hour = time[0]
                 minute = time[1]
                 second = time[2]
+                print(time)
                 time = int(hour) + int(minute)/60 + float(second)/3600
                 if time > highestTime['value']:
                     highestTime['string'] = f"{hour}:{minute}:{second}"
@@ -90,6 +97,10 @@ class Sort:
             dates[date]['lowestTime'] = lowestTime
             dates[date]['highestTime'] = highestTime
             del dates[date]['dates']
+
+        for date, value in dates.items():
+            with open(f"../fits/{date}/metadata.json", 'w') as f:
+                json.dump(value, f)
 
         return dates
     
@@ -131,3 +142,9 @@ class Sort:
                             else:
                                 bugs = 0 
                             writer.writerow([filename, date, time, hdr['EXPTIME'], hdr['OBSERVER'], hdr['INSTRUME'], bugs, unix, temp['main']['temp'], temp['weather'][0]['description']])
+
+
+a = Sort()
+
+b = a.getData()
+print(b)
